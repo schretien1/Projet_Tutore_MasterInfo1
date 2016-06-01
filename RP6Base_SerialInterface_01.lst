@@ -1,0 +1,221 @@
+   1               		.file	"RP6Base_SerialInterface_01.c"
+   2               		.arch atmega32
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  17               	.Ltext0:
+  18               	.global	main
+  20               	main:
+  21               	.LFB3:
+  22               	.LM1:
+  23               	/* prologue: frame size=0 */
+  24               	/* prologue end (size=0) */
+  25               	.LM2:
+  26 0000 0E94 0000 		call initRobotBase
+  27               	.LM3:
+  28 0004 0E94 0000 		call powerON
+  29               	.LM4:
+  30 0008 D09A      		sbi 58-0x20,0
+  31               	.LM5:
+  32 000a D198      		cbi 58-0x20,1
+  33               	.LM6:
+  34 000c D898      		cbi 59-0x20,0
+  35               	.LM7:
+  36 000e 80E0      		ldi r24,lo8(__c.1822)
+  37 0010 90E0      		ldi r25,hi8(__c.1822)
+  38 0012 0E94 0000 		call writeNStringP
+  39               	.LM8:
+  40 0016 80E0      		ldi r24,lo8(__c.1824)
+  41 0018 90E0      		ldi r25,hi8(__c.1824)
+  42 001a 0E94 0000 		call writeNStringP
+  43               	.L23:
+  44               	.LM9:
+  45 001e D89A      		sbi 59-0x20,0
+  46               	.LM10:
+  47 0020 81E0      		ldi r24,lo8(1)
+  48 0022 90E0      		ldi r25,hi8(1)
+  49 0024 0E94 0000 		call mSleep
+  50               	.LM11:
+  51 0028 D898      		cbi 59-0x20,0
+  52               	.LM12:
+  53 002a 1092 0000 		sts (compteur)+1,__zero_reg__
+  54 002e 1092 0000 		sts compteur,__zero_reg__
+  55               	.LM13:
+  56 0032 1092 0000 		sts (distance)+1,__zero_reg__
+  57 0036 1092 0000 		sts distance,__zero_reg__
+  58               	.LM14:
+  59 003a 81E0      		ldi r24,lo8(1)
+  60 003c 0E94 0000 		call readADC
+  61 0040 9093 0000 		sts (adc1)+1,r25
+  62 0044 8093 0000 		sts adc1,r24
+  63               	.LM15:
+  64 0048 892B      		or r24,r25
+  65 004a 01F0      		breq .L23
+  66               	.L16:
+  67               	.LM16:
+  68 004c 8091 0000 		lds r24,compteur
+  69 0050 9091 0000 		lds r25,(compteur)+1
+  70 0054 0196      		adiw r24,1
+  71 0056 9093 0000 		sts (compteur)+1,r25
+  72 005a 8093 0000 		sts compteur,r24
+  73               	.LM17:
+  74 005e 80E0      		ldi r24,lo8(0)
+  75 0060 90E0      		ldi r25,hi8(0)
+  76 0062 0E94 0000 		call mSleep
+  77               	.LM18:
+  78 0066 81E0      		ldi r24,lo8(1)
+  79 0068 0E94 0000 		call readADC
+  80 006c 9093 0000 		sts (adc1)+1,r25
+  81 0070 8093 0000 		sts adc1,r24
+  82               	.LM19:
+  83 0074 892B      		or r24,r25
+  84 0076 01F4      		brne .L16
+  85               	.LM20:
+  86 0078 2091 0000 		lds r18,compteur
+  87 007c 3091 0000 		lds r19,(compteur)+1
+  88 0080 84E6      		ldi r24,lo8(100)
+  89 0082 90E0      		ldi r25,hi8(100)
+  90 0084 AC01      		movw r20,r24
+  91 0086 249F      		mul r18,r20
+  92 0088 C001      		movw r24,r0
+  93 008a 259F      		mul r18,r21
+  94 008c 900D      		add r25,r0
+  95 008e 349F      		mul r19,r20
+  96 0090 900D      		add r25,r0
+  97 0092 1124      		clr r1
+  98 0094 6AE3      		ldi r22,lo8(58)
+  99 0096 70E0      		ldi r23,hi8(58)
+ 100 0098 0E94 0000 		call __udivmodhi4
+ 101 009c CB01      		movw r24,r22
+ 102 009e 7093 0000 		sts (distance)+1,r23
+ 103 00a2 6093 0000 		sts distance,r22
+ 104               	.LM21:
+ 105 00a6 6AE0      		ldi r22,lo8(10)
+ 106 00a8 0E94 0000 		call writeInteger
+ 107               	.LM22:
+ 108 00ac 80E0      		ldi r24,lo8(__c.1829)
+ 109 00ae 90E0      		ldi r25,hi8(__c.1829)
+ 110 00b0 0E94 0000 		call writeNStringP
+ 111               	.LM23:
+ 112 00b4 8091 0000 		lds r24,distance
+ 113 00b8 9091 0000 		lds r25,(distance)+1
+ 114 00bc 0997      		sbiw r24,9
+ 115 00be 00F4      		brsh .L5
+ 116 00c0 8091 0000 		lds r24,var
+ 117 00c4 9091 0000 		lds r25,(var)+1
+ 118 00c8 8536      		cpi r24,101
+ 119 00ca 9105      		cpc r25,__zero_reg__
+ 120 00cc 00F4      		brsh .L5
+ 121               	.LM24:
+ 122 00ce 0196      		adiw r24,1
+ 123 00d0 00C0      		rjmp .L22
+ 124               	.L5:
+ 125               	.LM25:
+ 126 00d2 8091 0000 		lds r24,var
+ 127 00d6 9091 0000 		lds r25,(var)+1
+ 128 00da 0097      		sbiw r24,0
+ 129 00dc 01F0      		breq .L9
+ 130               	.LM26:
+ 131 00de 0197      		sbiw r24,1
+ 132               	.L22:
+ 133 00e0 9093 0000 		sts (var)+1,r25
+ 134 00e4 8093 0000 		sts var,r24
+ 135               	.LM27:
+ 136 00e8 8091 0000 		lds r24,var
+ 137 00ec 9091 0000 		lds r25,(var)+1
+ 138 00f0 0897      		sbiw r24,8
+ 139 00f2 00F0      		brlo .L9
+ 140               	.LM28:
+ 141 00f4 89E0      		ldi r24,lo8(9)
+ 142 00f6 00C0      		rjmp .L21
+ 143               	.L9:
+ 144               	.LM29:
+ 145 00f8 80E0      		ldi r24,lo8(0)
+ 146               	.L21:
+ 147 00fa 0E94 0000 		call setLEDs
+ 148 00fe 00C0      		rjmp .L23
+ 149               	/* epilogue: frame size=0 */
+ 150               	/* epilogue: noreturn */
+ 151               	/* epilogue end (size=0) */
+ 152               	/* function main size 130 (130) */
+ 153               	.LFE3:
+ 155               	.global	counter
+ 156               	.global	counter
+ 157               		.section .bss
+ 160               	counter:
+ 161 0000 0000      		.skip 2,0
+ 162               	.global	bytesToReceive
+ 163               		.data
+ 166               	bytesToReceive:
+ 167 0000 01        		.byte	1
+ 168               	.global	compteur
+ 169               	.global	compteur
+ 170               		.section .bss
+ 173               	compteur:
+ 174 0002 0000      		.skip 2,0
+ 175               	.global	distance
+ 176               	.global	distance
+ 179               	distance:
+ 180 0004 0000      		.skip 2,0
+ 181               	.global	var
+ 182               	.global	var
+ 185               	var:
+ 186 0006 0000      		.skip 2,0
+ 187               		.section	.progmem.data,"a",@progbits
+ 190               	__c.1829:
+ 191 0000 0A00      		.string	"\n"
+ 194               	__c.1824:
+ 195 0002 0A44 6562 		.string	"\nDebut Programme\n"
+ 195      7574 2050 
+ 195      726F 6772 
+ 195      616D 6D65 
+ 195      0A00 
+ 198               	__c.1822:
+ 199 0014 0A4A 7573 		.string	"\nJust a simple counter program\n\n"
+ 199      7420 6120 
+ 199      7369 6D70 
+ 199      6C65 2063 
+ 199      6F75 6E74 
+ 200               		.comm statusLEDs,1,1
+ 201               		.comm adc0,2,1
+ 202               		.comm adc1,2,1
+ 203               		.comm motion_status,1,1
+ 204               		.comm receiveBuffer,20,1
+ 229               	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 RP6Base_SerialInterface_01.c
+C:\Users\Admin\AppData\Local\Temp/ccXRDWy7.s:3      *ABS*:0000003f __SREG__
+C:\Users\Admin\AppData\Local\Temp/ccXRDWy7.s:4      *ABS*:0000003e __SP_H__
+C:\Users\Admin\AppData\Local\Temp/ccXRDWy7.s:5      *ABS*:0000003d __SP_L__
+C:\Users\Admin\AppData\Local\Temp/ccXRDWy7.s:6      *ABS*:00000000 __tmp_reg__
+C:\Users\Admin\AppData\Local\Temp/ccXRDWy7.s:7      *ABS*:00000001 __zero_reg__
+C:\Users\Admin\AppData\Local\Temp/ccXRDWy7.s:20     .text:00000000 main
+C:\Users\Admin\AppData\Local\Temp/ccXRDWy7.s:198    .progmem.data:00000014 __c.1822
+C:\Users\Admin\AppData\Local\Temp/ccXRDWy7.s:194    .progmem.data:00000002 __c.1824
+C:\Users\Admin\AppData\Local\Temp/ccXRDWy7.s:173    .bss:00000002 compteur
+C:\Users\Admin\AppData\Local\Temp/ccXRDWy7.s:179    .bss:00000004 distance
+                            *COM*:00000002 adc1
+C:\Users\Admin\AppData\Local\Temp/ccXRDWy7.s:190    .progmem.data:00000000 __c.1829
+C:\Users\Admin\AppData\Local\Temp/ccXRDWy7.s:185    .bss:00000006 var
+C:\Users\Admin\AppData\Local\Temp/ccXRDWy7.s:160    .bss:00000000 counter
+C:\Users\Admin\AppData\Local\Temp/ccXRDWy7.s:166    .data:00000000 bytesToReceive
+                            *COM*:00000001 statusLEDs
+                            *COM*:00000002 adc0
+                            *COM*:00000001 motion_status
+                            *COM*:00000014 receiveBuffer
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+initRobotBase
+powerON
+writeNStringP
+mSleep
+readADC
+__udivmodhi4
+writeInteger
+setLEDs

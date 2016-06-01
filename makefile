@@ -30,7 +30,7 @@
 # Example: Let's assume your main source file is "RP6Base_MyProgram.c", then
 # you would write: TARGET = RP6Base_MyProgram
 
-TARGET = RP6Control_08_I2CMaster
+TARGET = RP6Base_SerialInterface_01
 
 ###############################################################################
 
@@ -38,10 +38,10 @@ TARGET = RP6Control_08_I2CMaster
 
 ###############################################################################
 # Specify relative path to RP6 library files here.
-# This is "../../RP6lib" or "../RP6lib" usually.
+# This is "../lib" usually.
 
 RP6_LIB_PATH=../../RP6lib
-RP6_LIB_PATH_OTHERS= $(RP6_LIB_PATH)/RP6control $(RP6_LIB_PATH)/RP6common
+RP6_LIB_PATH_OTHERS= $(RP6_LIB_PATH)/RP6base $(RP6_LIB_PATH)/RP6common
 
 ###############################################################################
 
@@ -49,8 +49,6 @@ RP6_LIB_PATH_OTHERS= $(RP6_LIB_PATH)/RP6control $(RP6_LIB_PATH)/RP6common
 #------------------------------------------------
 # Main Source file is _automatically_ added here:
 SRC = $(TARGET).c
-# DO NOT EDIT THIS!
-
 
 ###############################################################################
 # If there is more than one source file, append them here separated by spaces.
@@ -58,20 +56,11 @@ SRC = $(TARGET).c
 # NO header files "*.h"!)
 # Don't forget to add relative paths!
 
-SRC += $(RP6_LIB_PATH)/RP6control/RP6ControlLib.c
+SRC += $(RP6_LIB_PATH)/RP6base/RP6RobotBaseLib.c
 SRC += $(RP6_LIB_PATH)/RP6common/RP6uart.c
-
-
-#################################
-# -------------------------------
-# This is the File that we added to this example to make it easier to understand:
-SRC += RP6Control_I2CMasterLib.c
-# -------------------------------
-#################################
-
-
 #SRC += $(RP6_LIB_PATH)/RP6common/RP6I2CslaveTWI.c
-SRC += $(RP6_LIB_PATH)/RP6common/RP6I2CmasterTWI.c
+#SRC += $(RP6_LIB_PATH)/RP6common/RP6I2CmasterTWI.c
+
 
 # You can also wrap lines by appending a backslash to the end of the line
 # like this:
@@ -405,7 +394,7 @@ build: elf hex eep lss sym
 
 elf: $(TARGET).elf
 hex: $(TARGET).hex
-#eep: $(TARGET).eep
+eep: $(TARGET).eep
 lss: $(TARGET).lss
 sym: $(TARGET).sym
 
@@ -504,12 +493,12 @@ extcoff: $(TARGET).elf
 	@echo $(MSG_FLASH) $@
 	$(OBJCOPY) -O $(FORMAT) -R .eeprom $< $@
 
-#%.eep: %.elf
-#	@echo
-#	@echo $(MSG_EEPROM) $@
-#	-$(OBJCOPY) -j .eeprom --set-section-flags .eeprom=alloc,load \
-#	--change-section-lma .eeprom=0 -O $(FORMAT) $< $@ 
-	
+%.eep: %.elf
+	@echo
+	@echo $(MSG_EEPROM) $@
+	-$(OBJCOPY) -j .eeprom --set-section-flags .eeprom=alloc,load \
+	--change-section-lma .eeprom=0 -O $(FORMAT) $< $@
+
 # Create extended listing file from ELF output file.
 %.lss: %.elf
 	@echo
@@ -566,7 +555,7 @@ clean_list :
 # We want to keep the generated hexfiles:
 #	$(REMOVE) $(TARGET).hex
 
-#	$(REMOVE) $(TARGET).eep
+	$(REMOVE) $(TARGET).eep
 	$(REMOVE) $(TARGET).cof
 	$(REMOVE) $(TARGET).elf
 	$(REMOVE) $(TARGET).map
