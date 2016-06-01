@@ -15,7 +15,7 @@
  *
  * Here we only output a counter value every 100ms.
  *
- * ############################################################################
+ * ################################################### #########################
  * The Robot does NOT move in this example! You can simply put it on a table
  * next to your PC and you should connect it to the PC via the USB Interface!
  * ############################################################################
